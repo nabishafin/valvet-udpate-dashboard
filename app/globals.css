@@ -1,13 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #fcfbf9;
   --foreground: #171717;
+  --maroon: #650A33;
+  --gold: #BA8C43;
+  --zebra: #F4F1EC;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-maroon: var(--maroon);
+  --color-gold: var(--gold);
+  --color-zebra: var(--zebra);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
