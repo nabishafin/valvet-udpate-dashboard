@@ -32,6 +32,34 @@ const initialServices = [
   }
 ];
 
+const ImageUploadField = ({ label, field, currentImage, handleImageUpload }) => (
+  <div className="space-y-3">
+    <label className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">{label}</label>
+    <div className="flex items-center gap-4">
+      <div className="relative w-24 h-24 bg-zebra rounded-xl overflow-hidden border-2 border-dashed border-zinc-200 flex items-center justify-center group hover:border-maroon/40 transition-colors">
+        {currentImage ? (
+          <Image src={currentImage} alt="Preview" fill className="object-cover" />
+        ) : (
+          <LucideImage className="text-zinc-300" size={32} />
+        )}
+        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-xl">
+          <Plus size={20} className="text-white" />
+        </div>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => handleImageUpload(e, field)}
+          className="absolute inset-0 opacity-0 cursor-pointer z-10"
+        />
+      </div>
+      <div className="flex-1">
+        <p className="text-[10px] text-zinc-500 font-bold leading-tight uppercase">Upload</p>
+        <p className="text-[9px] text-zinc-400 mt-0.5 uppercase tracking-tighter">JPG/PNG/WEBP</p>
+      </div>
+    </div>
+  </div>
+);
+
 export default function ServicesPage() {
   const [services, setServices] = useState(initialServices);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -131,31 +159,6 @@ export default function ServicesPage() {
     }
   };
 
-  const ImageUploadField = ({ label, field, currentImage }) => (
-    <div className="space-y-3">
-      <label className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">{label}</label>
-      <div className="flex items-center gap-4">
-        <div className="relative w-24 h-24 bg-zebra rounded-xl overflow-hidden border-2 border-dashed border-zinc-200 flex items-center justify-center group hover:border-maroon/40 transition-colors">
-          {currentImage ? (
-            <Image src={currentImage} alt="Preview" fill className="object-cover" />
-          ) : (
-            <LucideImage className="text-zinc-300" size={32} />
-          )}
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => handleImageUpload(e, field)}
-            className="absolute inset-0 opacity-0 cursor-pointer z-10"
-          />
-        </div>
-        <div className="flex-1">
-          <p className="text-[10px] text-zinc-500 font-bold leading-tight uppercase">Upload</p>
-          <p className="text-[9px] text-zinc-400 mt-0.5 uppercase tracking-tighter">JPG/PNG/WEBP</p>
-        </div>
-      </div>
-    </div>
-  );
-
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <header className="flex items-center justify-between">
@@ -253,7 +256,7 @@ export default function ServicesPage() {
               <h4 className="font-black text-xs uppercase tracking-[0.2em] text-zinc-900">1. Hero Section & Identity</h4>
             </div>
 
-            <ImageUploadField label="Main Hero Image (Big Top Image)" field="image" currentImage={formData.image} />
+            <ImageUploadField label="Main Hero Image (Big Top Image)" field="image" currentImage={formData.image} handleImageUpload={handleImageUpload} />
 
             <div className="grid grid-cols-2 gap-6">
               <div className="space-y-3">
@@ -383,8 +386,8 @@ export default function ServicesPage() {
             </div>
 
             <div className="grid grid-cols-2 gap-6">
-              <ImageUploadField label="Secondary View 1" field="image2" currentImage={formData.image2} />
-              <ImageUploadField label="Secondary View 2" field="image3" currentImage={formData.image3} />
+              <ImageUploadField label="Secondary View 1" field="image2" currentImage={formData.image2} handleImageUpload={handleImageUpload} />
+              <ImageUploadField label="Secondary View 2" field="image3" currentImage={formData.image3} handleImageUpload={handleImageUpload} />
             </div>
 
             <ListInput

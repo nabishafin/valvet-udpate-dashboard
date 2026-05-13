@@ -12,6 +12,7 @@ import {
   EyeOff
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -45,10 +46,14 @@ export default function AuthPage() {
 
           <div className="relative z-10">
             <div className="flex items-center gap-2 mb-8">
-              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-maroon font-black text-xl">V</span>
+              <div className="relative w-28 h-12">
+                <Image 
+                  src="/valvet.png" 
+                  alt="Velvet Rouge Logo" 
+                  fill
+                  className="object-contain brightness-0 invert" 
+                />
               </div>
-              <span className="text-white font-black uppercase tracking-[0.3em] text-sm">Velvet Rouge</span>
             </div>
             
             <h1 className="text-5xl font-black text-white leading-[1.1] tracking-tight">

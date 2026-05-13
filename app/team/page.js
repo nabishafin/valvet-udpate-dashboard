@@ -8,10 +8,39 @@ import {
   Edit3, 
   Trash2,
   Phone,
-  Mail
+  Mail,
+  Image as LucideImage
 } from 'lucide-react';
 import Image from 'next/image';
 import Modal from "../../components/Modal";
+
+const ImageUploadField = ({ label, field, currentImage, handleImageUpload }) => (
+  <div className="space-y-3">
+    <label className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">{label}</label>
+    <div className="flex items-center gap-4">
+      <div className="relative w-20 h-20 bg-zebra rounded-full overflow-hidden border-2 border-dashed border-zinc-200 flex items-center justify-center group hover:border-maroon/40 transition-colors">
+        {currentImage ? (
+          <Image src={currentImage} alt="Preview" fill className="object-cover" />
+        ) : (
+          <LucideImage className="text-zinc-300" size={24} />
+        )}
+        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+          <Plus size={16} className="text-white" />
+        </div>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => handleImageUpload(e, field)}
+          className="absolute inset-0 opacity-0 cursor-pointer z-10"
+        />
+      </div>
+      <div className="flex-1">
+        <p className="text-[10px] text-zinc-500 font-bold leading-tight uppercase">Upload Portrait</p>
+        <p className="text-[9px] text-zinc-400 mt-0.5 uppercase tracking-tighter">Recommended: 1:1 Aspect Ratio</p>
+      </div>
+    </div>
+  </div>
+);
 
 const initialTeam = [
   { id: 1, name: 'Elena Vossen', role: 'Master Stylist', experience: '12 Years', rating: 4.9, avatar: 'https://i.pravatar.cc/150?u=elena' },
@@ -43,6 +72,16 @@ export default function TeamPage() {
       setFormData({ name: '', role: '', experience: '', rating: 5.0, avatar: '' });
     }
     setIsModalOpen(true);
+  };
+
+  const handleImageUpload = (e, field) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setFormData({ ...formData, [field]: reader.result });
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSave = (e) => {
@@ -210,16 +249,12 @@ export default function TeamPage() {
               />
             </div>
           </div>
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-zinc-600 uppercase tracking-widest">Avatar URL</label>
-            <input 
-              type="text" 
-              value={formData.avatar}
-              onChange={(e) => setFormData({...formData, avatar: e.target.value})}
-              className="w-full px-5 py-3 bg-zebra border-none rounded-2xl focus:ring-2 focus:ring-maroon/20 text-zinc-900 font-medium"
-              placeholder="https://i.pravatar.cc/150"
-            />
-          </div>
+          <ImageUploadField 
+            label="Specialist Portrait" 
+            field="avatar" 
+            currentImage={formData.avatar} 
+            handleImageUpload={handleImageUpload} 
+          />
           <button className="w-full bg-maroon text-white py-4 rounded-xl font-bold shadow-xl shadow-maroon/20 hover:bg-maroon/90 transition-all active:scale-[0.98] mt-4">
             {currentMember ? 'Update Profile' : 'Add to Team'}
           </button>

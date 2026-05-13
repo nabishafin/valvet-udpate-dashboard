@@ -11,6 +11,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function ForgotPasswordPage() {
   const [step, setStep] = useState(1); // 1: Email, 2: Code, 3: New Password
@@ -38,10 +39,20 @@ export default function ForgotPasswordPage() {
 
       <div className="w-full max-w-[550px] bg-white rounded-3xl shadow-2xl shadow-maroon/5 border border-zinc-100 overflow-hidden animate-in fade-in zoom-in-95 duration-500">
         <div className="p-10 lg:p-14">
-          <Link href="/login" className="flex items-center gap-2 text-zinc-400 hover:text-maroon transition-colors mb-10 group w-fit">
-            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-            <span className="text-xs font-bold uppercase tracking-widest">Back to Login</span>
-          </Link>
+          <div className="flex items-center justify-between mb-10">
+            <Link href="/login" className="flex items-center gap-2 text-zinc-400 hover:text-maroon transition-colors group w-fit">
+              <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+              <span className="text-xs font-bold uppercase tracking-widest">Back</span>
+            </Link>
+            <div className="relative w-24 h-8">
+              <Image 
+                src="/valvet.png" 
+                alt="Velvet Rouge Logo" 
+                fill
+                className="object-contain" 
+              />
+            </div>
+          </div>
 
           <div className="mb-10 text-center">
             <div className="w-16 h-16 bg-maroon/5 rounded-2xl flex items-center justify-center text-maroon mx-auto mb-6">
