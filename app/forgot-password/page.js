@@ -8,28 +8,74 @@ import {
   ArrowRight, 
   ArrowLeft,
   ShieldCheck,
-  CheckCircle2
+  Loader2
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
+import { 
+  useForgotPasswordMutation, 
+  useVerifyOtpMutation, 
+  useResetPasswordMutation 
+} from '../redux/features/auth/authApi';
 
 export default function ForgotPasswordPage() {
+  const router = useRouter();
   const [step, setStep] = useState(1); // 1: Email, 2: Code, 3: New Password
   const [email, setEmail] = useState('');
-  const [code, setCode] = useState('');
+  const [otp, setOtp] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [resetToken, setResetToken] = useState('');
 
-  const handleNextStep = (e) => {
-    e.preventDefault();
-    setStep(step + 1);
+  const [forgotPassword, { isLoading: isForgotLoading }] = useForgotPasswordMutation();
+  const [verifyOtp, { isLoading: isVerifyLoading }] = useVerifyOtpMutation();
+  const [resetPassword, { isLoading: isResetLoading }] = useResetPasswordMutation();
+
+  const handleSendOtp = async (e) => {
+    if (e) e.preventDefault();
+    try {
+      await forgotPassword({ email }).unwrap();
+      toast.success('OTP sent to your email');
+      setStep(2);
+    } catch (err) {
+      toast.error(err?.data?.message || 'Failed to send OTP');
+    }
   };
 
-  const handleReset = (e) => {
+  const handleVerifyOtp = async (e) => {
     e.preventDefault();
-    // Simulate password reset
-    window.location.href = '/login';
+    try {
+      const res = await verifyOtp({ email, otp }).unwrap();
+      const token = res?.data?.resetToken || res?.resetToken;
+      if (token) {
+        setResetToken(token);
+        toast.success('OTP verified');
+        setStep(3);
+      } else {
+        toast.error('Failed to get reset token');
+      }
+    } catch (err) {
+      toast.error(err?.data?.message || 'Invalid OTP');
+    }
   };
+
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      return toast.error('Passwords do not match');
+    }
+    try {
+      await resetPassword({ resetToken, newPassword: password }).unwrap();
+      toast.success('Password reset successfully');
+      router.push('/login');
+    } catch (err) {
+      toast.error(err?.data?.message || 'Failed to reset password');
+    }
+  };
+
+  const isLoading = isForgotLoading || isVerifyLoading || isResetLoading;
 
   return (
     <div className="min-h-screen bg-zebra flex items-center justify-center p-6 relative overflow-hidden font-outfit">
@@ -72,7 +118,14 @@ export default function ForgotPasswordPage() {
             </p>
           </div>
 
-          <form onSubmit={step === 3 ? handleReset : handleNextStep} className="space-y-6">
+          <form 
+            onSubmit={
+              step === 1 ? handleSendOtp : 
+              step === 2 ? handleVerifyOtp : 
+              handleResetPassword
+            } 
+            className="space-y-6"
+          >
             {step === 1 && (
               <div className="space-y-2">
                 <label className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest ml-1">Work Email</label>
@@ -99,8 +152,8 @@ export default function ForgotPasswordPage() {
                     required
                     type="text"
                     maxLength={6}
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
                     placeholder="000000"
                     className="w-full pl-14 pr-6 py-4 bg-zebra border-none rounded-xl focus:ring-2 focus:ring-maroon/20 transition-all text-zinc-900 font-black tracking-[0.5em] text-center placeholder:text-zinc-200"
                   />
@@ -141,20 +194,36 @@ export default function ForgotPasswordPage() {
               </>
             )}
 
-            <button className="w-full bg-maroon text-white py-5 rounded-xl font-black uppercase tracking-[0.2em] shadow-2xl shadow-maroon/20 hover:bg-maroon/90 transition-all active:scale-[0.98] flex items-center justify-center gap-3 group">
-              <span>
-                {step === 1 && 'Send Code'}
-                {step === 2 && 'Verify Code'}
-                {step === 3 && 'Reset Password'}
-              </span>
-              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            <button 
+              disabled={isLoading}
+              className="w-full bg-maroon text-white py-5 rounded-xl font-black uppercase tracking-[0.2em] shadow-2xl shadow-maroon/20 hover:bg-maroon/90 transition-all active:scale-[0.98] flex items-center justify-center gap-3 group disabled:opacity-70"
+            >
+              {isLoading ? (
+                <Loader2 size={18} className="animate-spin" />
+              ) : (
+                <>
+                  <span>
+                    {step === 1 && 'Send Code'}
+                    {step === 2 && 'Verify Code'}
+                    {step === 3 && 'Reset Password'}
+                  </span>
+                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                </>
+              )}
             </button>
           </form>
 
           {step === 2 && (
             <p className="mt-8 text-center text-sm text-zinc-500 font-medium">
               Didn&apos;t receive the code? 
-              <button className="text-maroon font-bold ml-2 hover:underline">Resend</button>
+              <button 
+                type="button"
+                onClick={() => handleSendOtp()}
+                disabled={isForgotLoading}
+                className="text-maroon font-bold ml-2 hover:underline disabled:opacity-50"
+              >
+                {isForgotLoading ? 'Sending...' : 'Resend'}
+              </button>
             </p>
           )}
         </div>

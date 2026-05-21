@@ -11,7 +11,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
         className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" 
         onClick={onClose} 
       />
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl relative z-10 overflow-hidden animate-in zoom-in-95 duration-200">
+      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl relative z-10 overflow-hidden animate-in zoom-in-95 duration-200">
         <div className="px-8 py-6 border-b border-zinc-100 flex items-center justify-between">
           <h3 className="text-xl font-bold text-zinc-900">{title}</h3>
           <button 
@@ -21,7 +21,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
             <X size={20} />
           </button>
         </div>
-        <div className="px-8 py-8">
+        <div className="px-8 py-8 max-h-[70vh] overflow-y-auto">
           {children}
         </div>
       </div>

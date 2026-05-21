@@ -10,17 +10,24 @@ import {
   ResponsiveContainer 
 } from 'recharts';
 
-const data = [
-  { day: '01', views: 400 },
-  { day: '05', views: 800 },
-  { day: '10', views: 600 },
-  { day: '15', views: 1200 },
-  { day: '20', views: 900 },
-  { day: '25', views: 1600 },
-  { day: '30', views: 2100 },
-];
+const TrafficChart = ({ trafficTrend = [], isLoading }) => {
+  // Map API data (_id: "05-01", hits: 520) to chart format
+  const chartData = trafficTrend.map((item) => ({
+    day: item._id,
+    views: item.hits,
+  }));
 
-const TrafficChart = () => {
+  if (isLoading) {
+    return (
+      <div className="bg-white p-8 rounded-2xl shadow-sm border border-zinc-100 h-[400px] flex items-center justify-center">
+        <div className="text-center space-y-3">
+          <div className="w-10 h-10 border-4 border-gold border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-zinc-400 text-sm font-medium">Loading traffic data...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white p-8 rounded-2xl shadow-sm border border-zinc-100 h-[400px]">
       <div className="flex items-center justify-between mb-8">
@@ -28,15 +35,11 @@ const TrafficChart = () => {
           <h3 className="text-xl font-bold text-zinc-900">Traffic Trend</h3>
           <p className="text-zinc-500 text-sm">Website hits for the last 30 days</p>
         </div>
-        <select className="bg-zebra border-none text-zinc-600 text-sm rounded-xl px-4 py-2 focus:ring-0">
-          <option>Last 30 Days</option>
-          <option>Last 7 Days</option>
-        </select>
       </div>
       
       <div className="h-[280px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
+          <AreaChart data={chartData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#BA8C43" stopOpacity={0.1}/>
@@ -63,6 +66,7 @@ const TrafficChart = () => {
                 border: 'none', 
                 boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' 
               }}
+              formatter={(value) => [`${value.toLocaleString()} hits`, 'Traffic']}
             />
             <Area 
               type="monotone" 
