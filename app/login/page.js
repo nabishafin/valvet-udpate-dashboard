@@ -104,24 +104,18 @@ export default function AuthPage() {
           password: ''
         });
       }
-    } catch (error) {
-      console.error('Auth error:', error);
-
-      if (error?.status === 'FETCH_ERROR') {
-        toast.error(
-          'Cannot connect to server. Make sure backend is running.'
-        );
-      } else if (error?.status === 'PARSING_ERROR') {
-        toast.error(
-          'Server error. Please check API URL.'
-        );
-      } else if (error?.data?.message) {
-        toast.error(error.data.message);
-      } else {
-        toast.error(
-          'Authentication failed. Please check credentials.'
-        );
-      }
+    } catch (err) {
+      const msg =
+        err?.data?.message ||
+        err?.message ||
+        (err?.status === 'FETCH_ERROR'
+          ? 'Cannot connect to server. Make sure backend is running.'
+          : null) ||
+        (err?.status === 'PARSING_ERROR'
+          ? 'Server error. Please check API URL.'
+          : null) ||
+        'Invalid email or password. Please try again.';
+      toast.error(msg);
     }
   };
 

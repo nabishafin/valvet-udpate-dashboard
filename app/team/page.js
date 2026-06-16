@@ -7,7 +7,6 @@ import {
   Star,
   Edit3,
   Trash2,
-  Mail,
   Image as LucideImage,
   Loader2,
   ToggleLeft,
@@ -77,7 +76,7 @@ export default function TeamPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
 
-  const { data: response, isLoading: isFetching } = useGetAllTeamQuery({
+  const { data: response, isLoading: isFetching, refetch } = useGetAllTeamQuery({
     search: searchQuery,
     page,
     limit: 10,

@@ -6,12 +6,12 @@ import {
   LayoutDashboard,
   Settings,
   Users,
-  MessageSquare,
   Tag,
   LogOut,
   Loader2,
-  CalendarDays,
-  Zap
+  Zap,
+  BookOpen,
+  Mail,
 } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -47,9 +47,11 @@ const Sidebar = () => {
 
   const navItems = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
+    { name: 'Instant Bookings', icon: Zap, path: '/instant-bookings' },
     { name: 'Manage Services', icon: Settings, path: '/services' },
     { name: 'Manage Team', icon: Users, path: '/team' },
-    { name: 'Instant Bookings', icon: Zap, path: '/instant-bookings' },
+    { name: 'Blog', icon: BookOpen, path: '/blogs' },
+    { name: 'Subscribers', icon: Mail, path: '/subscribers' },
     { name: 'Investment Plans', icon: Tag, path: '/pricing' },
     { name: 'Global Settings', icon: Settings, path: '/settings' },
   ];

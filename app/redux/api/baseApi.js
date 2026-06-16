@@ -31,11 +31,18 @@ const baseQuery = fetchBaseQuery({
 const baseQueryWithReauth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
+  // Skip reauth logic for auth endpoints themselves (login, register, etc.)
+  // so that a wrong-password 401 surfaces as a real error instead of triggering a redirect
+  const url = typeof args === 'string' ? args : args?.url ?? '';
+  const isAuthEndpoint = url.includes('/auth/');
+
   // If we get a 401 Unauthorized OR 'jwt expired' message, try to refresh the token
   const isTokenExpired =
-    (result?.error && result.error.status === 401) ||
-    (result?.error?.data?.message === "jwt expired") ||
-    (result?.error?.data?.message === "invalid signature");
+    !isAuthEndpoint && (
+      (result?.error && result.error.status === 401) ||
+      (result?.error?.data?.message === "jwt expired") ||
+      (result?.error?.data?.message === "invalid signature")
+    );
 
   if (isTokenExpired) {
     const refreshToken = localStorage.getItem("refreshToken");
@@ -115,7 +122,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["auth", "dashboardStats", "admin-users", "earnings-overview", "Faqs", "payments", "studios", "team", "instant-bookings", "settings", "pricing"],
+  tagTypes: ["auth", "dashboardStats", "admin-users", "earnings-overview", "Faqs", "payments", "studios", "team", "instant-bookings", "settings", "pricing", "blogs", "subscribers"],
   endpoints: () => ({}),
   // Global configuration for refetch behavior
   keepUnusedDataFor: 0, // Don't keep unused data in cache
