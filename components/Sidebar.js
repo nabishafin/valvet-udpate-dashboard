@@ -12,6 +12,7 @@ import {
   Zap,
   BookOpen,
   Mail,
+  MessageSquare,
 } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -48,6 +49,7 @@ const Sidebar = () => {
   const navItems = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
     { name: 'Instant Bookings', icon: Zap, path: '/instant-bookings' },
+    { name: 'Contact Messages', icon: MessageSquare, path: '/contact' },
     { name: 'Manage Services', icon: Settings, path: '/services' },
     { name: 'Manage Team', icon: Users, path: '/team' },
     { name: 'Blog', icon: BookOpen, path: '/blogs' },
