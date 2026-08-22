@@ -84,6 +84,7 @@ export default function SettingsPage() {
       email: '',
       whatsapp: '',
       address: '',
+      googleMap: '',
       mapLink: '',
     },
     socials: {
@@ -117,7 +118,14 @@ export default function SettingsPage() {
         name: response.data.name || '',
         tagline: response.data.tagline || '',
         logo: response.data.logo || '',
-        contact: { ...prev.contact, ...response.data.contact },
+        contact: {
+          phone: response.data.contact?.phone ?? '',
+          email: response.data.contact?.email ?? '',
+          whatsapp: response.data.contact?.whatsapp ?? '',
+          address: response.data.contact?.address ?? '',
+          googleMap: response.data.contact?.googleMap ?? response.data.contact?.mapLink ?? '',
+          mapLink: response.data.contact?.mapLink ?? response.data.contact?.googleMap ?? '',
+        },
         socials: { ...prev.socials, ...response.data.socials },
         openingHours: { ...prev.openingHours, ...response.data.openingHours },
         founder: {
@@ -392,13 +400,23 @@ export default function SettingsPage() {
                 />
               </div>
               <div className="space-y-1 md:col-span-2">
-                <label className="block text-sm font-medium text-zinc-700">Google Maps Link</label>
-                <input
-                  type="url"
-                  value={formData.contact.mapLink}
-                  onChange={(e) => handleChange('contact', 'mapLink', e.target.value)}
-                  className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-lg focus:outline-none focus:border-maroon focus:ring-1 focus:ring-maroon text-zinc-900"
-                  placeholder="https://maps.google.com/?q=..."
+                <label className="block text-sm font-medium text-zinc-700">Google Maps Embed / Link (googleMap)</label>
+                <textarea
+                  rows={2}
+                  value={formData.contact.googleMap || formData.contact.mapLink || ''}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setFormData((prev) => ({
+                      ...prev,
+                      contact: {
+                        ...prev.contact,
+                        googleMap: val,
+                        mapLink: val,
+                      },
+                    }));
+                  }}
+                  className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-lg focus:outline-none focus:border-maroon focus:ring-1 focus:ring-maroon text-zinc-900 text-sm resize-none"
+                  placeholder='<iframe src="https://www.google.com/maps/embed?..." ...></iframe> or Google Maps URL'
                 />
               </div>
             </div>
